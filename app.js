@@ -1,7 +1,7 @@
 var app = angular.module('app', ['ngTouch', 'ui.grid', 'ui.grid.pagination']);
 
 app.controller('MainCtrl', [
-'$scope', '$http', 'uiGridConstants', function($scope, $http, uiGridConstants) {
+'$scope', '$http', 'uiGridConstants', function($scope, $http) {
 
   var paginationOptions = {
     pageNumber: 1,
@@ -13,7 +13,6 @@ app.controller('MainCtrl', [
     paginationPageSizes: [25, 50, 75],
     paginationPageSize: 25,
     useExternalPagination: true,
-    useExternalSorting: true,
     columnDefs: [
       { name: 'name' },
       { name: 'gender', enableSorting: false },
@@ -21,14 +20,6 @@ app.controller('MainCtrl', [
     ],
     onRegisterApi: function(gridApi) {
       $scope.gridApi = gridApi;
-      $scope.gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
-        if (sortColumns.length == 0) {
-          paginationOptions.sort = null;
-        } else {
-          paginationOptions.sort = sortColumns[0].sort.direction;
-        }
-        getPage();
-      });
       gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
         paginationOptions.pageNumber = newPage;
         paginationOptions.pageSize = pageSize;
@@ -38,18 +29,7 @@ app.controller('MainCtrl', [
   };
 
   var getPage = function() {
-    var url;
-    switch(paginationOptions.sort) {
-      case uiGridConstants.ASC:
-        url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100_ASC.json';
-        break;
-      case uiGridConstants.DESC:
-        url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100_DESC.json';
-        break;
-      default:
-        url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100.json';
-        break;
-    }
+    var url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100.json';
 
     $http.get(url)
     .then(function (response) {
