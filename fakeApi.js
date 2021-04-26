@@ -502,17 +502,15 @@ const data = [
     ];
 
     function getData(url) {
+        console.log('in getData ', url)
         let [base,page] = url.split('&page=')
         let limit = base.split('?limit=')[1];
         let res = {}
         res.total = data.length;
         res.page = page;
         res.data = data.slice((page - 1) * limit, page * limit)
+        console.log('res ', res)
         return new Promise(resolve => {
-            setTimeout(() => {
               resolve(res);
-            }, 200);
           });
     }
-
-    export default getData;

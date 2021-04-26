@@ -21,6 +21,7 @@ app.controller('MainCtrl', [
     onRegisterApi: function(gridApi) {
       $scope.gridApi = gridApi;
       gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+        console.log('in paginationChanged')
         paginationOptions.pageNumber = newPage;
         paginationOptions.pageSize = pageSize;
         getPage();
@@ -29,15 +30,19 @@ app.controller('MainCtrl', [
   };
 
   var getPage = function() {
-    var url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100.json';
+      console.log('in get page', paginationOptions)
+    //var url = 'https://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/data/100.json';
+    var url = `blah?limit=${paginationOptions.pageSize}&page=${paginationOptions.pageNumber}`
 
-    $http.get(url)
+    //$http.get(url)
+    getData(url)
     .then(function (response) {
       var data = response.data;
 
-      $scope.gridOptions.totalItems = 100;
-      var firstRow = (paginationOptions.pageNumber - 1) * paginationOptions.pageSize;
-      $scope.gridOptions.data = data.slice(firstRow, firstRow + paginationOptions.pageSize);
+      $scope.gridOptions.totalItems = response.total;
+      console.log('data before ', $scope.gridOptions.data)
+      $scope.gridOptions.data = data.slice();
+      console.log('data after ', $scope.gridOptions.data)
     });
   };
 
